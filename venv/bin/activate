@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/moyuhao/Desktop/ttds_project/venv"
+VIRTUAL_ENV="/Users/moyuhao/Downloads/ttds-final-main/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

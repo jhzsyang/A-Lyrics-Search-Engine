@@ -1,8 +1,10 @@
 import os
 from datetime import timedelta
-
+import flask_paginate
 from flask import Flask
 from . import search
+
+
 
 
 def create_app(test_config=None):
@@ -16,6 +18,7 @@ def create_app(test_config=None):
     app.jinja_env.auto_reload = True
     app.debug = True
     app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)
+    app.config['FLASK_ENV']='development'
     if test_config is None:
         # load the instance config, if it exists, when not testing
         app.config.from_pyfile('config.py', silent=True)
@@ -33,3 +36,5 @@ def create_app(test_config=None):
     app.register_blueprint(search.bp)
 
     return app
+
+

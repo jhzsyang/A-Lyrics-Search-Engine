@@ -247,53 +247,47 @@ def rank_BM25(query, docs, inv_idx_docs, idx_docs):
 def algorithm(choice, query):
     with open('./app/data/pickle/title.pickle', 'rb') as f:
         title = pickle.load(f)
-    with open('./app/data/pickle/title_reverse_indexer.pickle', 'rb') as f:
-        title_reverse_indexer = pickle.load(f)
-    with open('./app/data/pickle/title_words_count.pickle', 'rb') as f:
-        title_words_count = pickle.load(f)
-
+    with open('./app/data/pickle/artist.pickle', 'rb') as f:
+        artist = pickle.load(f)
     with open('./app/data/pickle/album.pickle', 'rb') as f:
         album = pickle.load(f)
-    with open('./app/data/pickle/album_reverse_indexer.pickle', 'rb') as f:
-        album_reverse_indexer = pickle.load(f)
-    with open('./app/data/pickle/album_words_count.pickle', 'rb') as f:
-        album_word_counts = pickle.load(f)
-
     with open('./app/data/pickle/lyrics.pickle', 'rb') as f:
         lyrics = pickle.load(f)
-    with open('./app/data/pickle/lyrics_reverse_indexer.pickle', 'rb') as f:
-        lyrics_reverse_indexer = pickle.load(f)
-    with open('./app/data/pickle/lyrics_words_count.pickle', 'rb') as f:
-        lyrics_word_counts = pickle.load(f)
-
-    with open('./app/data/pickle/topic_related_words.pickle', 'rb') as f:
-        topic_related_words = pickle.load(f)
-    with open('./app/data/pickle/dates.pickle', 'rb') as f:
-        dates = pickle.load(f)
+    with open('./app/data/pickle/date.pickle', 'rb') as f:
+        date = pickle.load(f)
+    with open('./app/data/pickle/artist_link.pickle', 'rb') as f:
+        artist_link = pickle.load(f)
+    with open('./app/data/pickle/album_link.pickle', 'rb') as f:
+        album_link = pickle.load(f)
+    with open('./app/data/pickle/link.pickle', 'rb') as f:
+        link = pickle.load(f)
 
     res = dict()
     i = 1
+    p = re.split(r' (AND|OR) ', query)
+    q = query
+    q = q.replace('AND', ' ')
+    q = q.replace('OR', ' ')
+    q = q.replace('NOT', ' ')
     if choice == 'song':
-        p = re.split(r' (AND|OR) ', query)
-        q = query
-        q = q.replace('AND', ' ')
-        q = q.replace('OR', ' ')
-        q = q.replace('NOT', ' ')
+        with open('./app/data/pickle/title_reverse_indexer.pickle', 'rb') as f:
+            title_reverse_indexer = pickle.load(f)
+        with open('./app/data/pickle/title_words_count.pickle', 'rb') as f:
+            title_words_count = pickle.load(f)
 
         tfidf = rank_BM25(q, title, title_reverse_indexer, title_words_count)
-
         if len(p) == 1:
             search_result = phrase_search(title_reverse_indexer, query)
             for (artist, index), tfidf_value in tfidf:
                 if (artist, index) in search_result:
-                    line = [title[artist, index], artist, album[artist, index], dates[artist, index],
-                            " ".join(topic_related_words[artist, index])]
+                    line = [title[artist, index], artist, album[artist, index], date[artist, index],
+                            link[artist, index], artist_link[artist, index], album_link[artist, index]]
                     res[i] = line
                     i += 1
             for (artist, index), tfidf_value in tfidf:
                 if (artist, index) not in search_result:
-                    line = [title[artist, index], artist, album[artist, index], dates[artist, index],
-                            " ".join(topic_related_words[artist, index])]
+                    line = [title[artist, index], artist, album[artist, index], date[artist, index],
+                            link[artist, index], artist_link[artist, index], album_link[artist, index]]
                     res[i] = line
                     i += 1
         else:
@@ -301,36 +295,110 @@ def algorithm(choice, query):
             search_result = boolean_search(title_reverse_indexer, query)
             for (artist, index), tfidf_value in tfidf:
                 if (artist, index) in search_result:
-                    line = [title[artist, index], artist, album[artist, index], dates[artist, index],
-                            " ".join(topic_related_words[artist, index])]
+                    line = [title[artist, index], artist, album[artist, index], date[artist, index],
+                            link[artist, index], artist_link[artist, index], album_link[artist, index]]
                     res[i] = line
                     i += 1
             for (artist, index), tfidf_value in tfidf:
                 if (artist, index) not in search_result:
-                    line = [title[artist, index], artist, album[artist, index], dates[artist, index],
-                            " ".join(topic_related_words[artist, index])]
+                    line = [title[artist, index], artist, album[artist, index], date[artist, index],
+                            link[artist, index], artist_link[artist, index], album_link[artist, index]]
                     res[i] = line
                     i += 1
 
-    elif choice == 'keyword':
-        p = re.split(r' (AND|OR) ', query)
-        q = query
-        q = q.replace('AND', ' ')
-        q = q.replace('OR', ' ')
-        q = q.replace('NOT', ' ')
+    elif choice == 'artist':
+        with open('./app/data/pickle/artist_reverse_indexer.pickle', 'rb') as f:
+            artist_reverse_indexer = pickle.load(f)
+        with open('./app/data/pickle/artist_words_count.pickle', 'rb') as f:
+            artist_word_counts = pickle.load(f)
+
+        tfidf = rank_BM25(q, artist, artist_reverse_indexer, artist_word_counts)
+        if len(p) == 1:
+            search_result = phrase_search(artist_reverse_indexer, query)
+            for (artist, index), tfidf_value in tfidf:
+                if (artist, index) in search_result:
+                    line = [artist, album[artist, index], title[artist, index], date[artist, index],
+                            artist_link[artist, index], album_link[artist, index], link[artist, index]]
+                    res[i] = line
+                    i += 1
+            for (artist, index), tfidf_value in tfidf:
+                if (artist, index) not in search_result:
+                    line = [artist, album[artist, index], title[artist, index], date[artist, index],
+                            artist_link[artist, index], album_link[artist, index], link[artist, index]]
+                    res[i] = line
+                    i += 1
+        else:
+            query = evaluate(query)
+            search_result = boolean_search(artist_reverse_indexer, query)
+            for (artist, index), tfidf_value in tfidf:
+                if (artist, index) in search_result:
+                    line = [artist, album[artist, index], title[artist, index], date[artist, index],
+                            artist_link[artist, index], album_link[artist, index], link[artist, index]]
+                    res[i] = line
+                    i += 1
+            for (artist, index), tfidf_value in tfidf:
+                if (artist, index) not in search_result:
+                    line = [artist, album[artist, index], title[artist, index], date[artist, index],
+                            artist_link[artist, index], album_link[artist, index], link[artist, index]]
+                    res[i] = line
+                    i += 1
+
+    elif choice == 'album':
+        with open('./app/data/pickle/album_reverse_indexer.pickle', 'rb') as f:
+            album_reverse_indexer = pickle.load(f)
+        with open('./app/data/pickle/album_words_count.pickle', 'rb') as f:
+            album_word_counts = pickle.load(f)
+
+        tfidf = rank_BM25(q, album, album_reverse_indexer, album_word_counts)
+        if len(p) == 1:
+            search_result = phrase_search(album_reverse_indexer, query)
+            for (artist, index), tfidf_value in tfidf:
+                if (artist, index) in search_result:
+                    line = [album[artist, index], artist, title[artist, index], date[artist, index],
+                            album_link[artist, index], artist_link[artist, index], link[artist, index]]
+                    res[i] = line
+                    i += 1
+            for (artist, index), tfidf_value in tfidf:
+                if (artist, index) not in search_result:
+                    line = [album[artist, index], artist, title[artist, index], date[artist, index],
+                            album_link[artist, index], artist_link[artist, index], link[artist, index]]
+                    res[i] = line
+                    i += 1
+        else:
+            query = evaluate(query)
+            search_result = boolean_search(album_reverse_indexer, query)
+            for (artist, index), tfidf_value in tfidf:
+                if (artist, index) in search_result:
+                    line = [album[artist, index], artist, title[artist, index], date[artist, index],
+                            album_link[artist, index], artist_link[artist, index], link[artist, index]]
+                    res[i] = line
+                    i += 1
+            for (artist, index), tfidf_value in tfidf:
+                if (artist, index) not in search_result:
+                    line = [album[artist, index], artist, title[artist, index], date[artist, index],
+                            album_link[artist, index], artist_link[artist, index], link[artist, index]]
+                    res[i] = line
+                    i += 1
+
+    elif choice == 'lyrics':
+        with open('./app/data/pickle/lyrics_reverse_indexer.pickle', 'rb') as f:
+            lyrics_reverse_indexer = pickle.load(f)
+        with open('./app/data/pickle/lyrics_words_count.pickle', 'rb') as f:
+            lyrics_word_counts = pickle.load(f)
+
         tfidf = rank_BM25(q, lyrics, lyrics_reverse_indexer, lyrics_word_counts)
         if len(p) == 1:
             search_result = phrase_search(lyrics_reverse_indexer, query)
             for (artist, index), tfidf_value in tfidf:
                 if (artist, index) in search_result:
-                    line = [title[artist, index], artist, album[artist, index], dates[artist, index],
-                            " ".join(topic_related_words[artist, index])]
+                    line = [lyrics[artist, index], title[artist, index], artist, date[artist, index],
+                            link[artist, index], artist_link[artist, index]]
                     res[i] = line
                     i += 1
             for (artist, index), tfidf_value in tfidf:
                 if (artist, index) not in search_result:
-                    line = [title[artist, index], artist, album[artist, index], dates[artist, index],
-                            " ".join(topic_related_words[artist, index])]
+                    line = [lyrics[artist, index], title[artist, index], artist, date[artist, index],
+                            link[artist, index], artist_link[artist, index]]
                     res[i] = line
                     i += 1
         else:
@@ -338,14 +406,14 @@ def algorithm(choice, query):
             search_result = boolean_search(lyrics_reverse_indexer, query)
             for (artist, index), tfidf_value in tfidf:
                 if (artist, index) in search_result:
-                    line = [title[artist, index], artist, album[artist, index], dates[artist, index],
-                            " ".join(topic_related_words[artist, index])]
+                    line = [lyrics[artist, index], title[artist, index], artist, date[artist, index],
+                            link[artist, index], artist_link[artist, index]]
                     res[i] = line
                     i += 1
             for (artist, index), tfidf_value in tfidf:
                 if (artist, index) not in search_result:
-                    line = [title[artist, index], artist, album[artist, index], dates[artist, index],
-                            " ".join(topic_related_words[artist, index])]
+                    line = [lyrics[artist, index], title[artist, index], artist, date[artist, index],
+                            link[artist, index], artist_link[artist, index]]
                     res[i] = line
                     i += 1
 
