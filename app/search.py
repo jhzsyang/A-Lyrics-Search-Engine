@@ -8,6 +8,7 @@ import re
 
 bp = Blueprint('search', __name__, url_prefix='/')
 
+a = Algorithm()
 
 @bp.route('/')
 def index():
@@ -20,7 +21,7 @@ def search():
     query = request.form['keyword']
 
     start_time = time.time()
-    data_dict = algorithm('song', query)
+    data_dict = a.algorithm('default', query)
     duration_time = time.time() - start_time
 
     page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
@@ -43,7 +44,7 @@ def search():
 @bp.route('/songs', methods=('GET', 'POST'))
 def search_Songs():
     # start_time = time.time()
-    data_dict = algorithm('song', query)
+    data_dict = a.algorithm('song', query)
     # duration_time = time.time() - start_time
 
     page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
@@ -66,7 +67,7 @@ def search_Songs():
 @bp.route('/artists', methods=('GET', 'POST'))
 def artists():
     # start_time = time.time()
-    data_dict = algorithm('artist', query)
+    data_dict = a.algorithm('artist', query)
     # duration_time = time.time() - start_time
 
     page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
@@ -89,7 +90,7 @@ def artists():
 @bp.route('/albums', methods=('GET', 'POST'))
 def albums():
     # start_time = time.time()
-    data_dict = algorithm('album', query)
+    data_dict = a.algorithm('album', query)
     # duration_time = time.time() - start_time
 
     page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
@@ -112,7 +113,7 @@ def albums():
 @bp.route('/lyrics', methods=('GET', 'POST'))
 def search_Lyrics():
     # start_time = time.time()
-    data_dict = algorithm('lyrics', query)
+    data_dict = a.algorithm('lyrics', query)
     # duration_time = time.time() - start_time
 
     page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')

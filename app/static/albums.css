@@ -42,6 +42,7 @@ body
     color: #fff;
     border-radius: 20px;
     font-size: inherit;
+    margin-left: 8px;
 }
 
 
@@ -49,7 +50,7 @@ body
 {
 	font-family:'trebuchet MS', 'Lucida sans', Arial;   /*设置字体*/
 	font-size: 14px;                                    /*设置字体大小14px*/
-	color: #555;                                        /*设置字体颜色浅灰色*/
+	color: #000000;                                        /*设置字体颜色浅灰色*/
 	width: 80%;                                         /*设置页面宽度占浏览器大小的40%*/
 	margin: 60px auto;                                  /*页面自适应居中*/
 }
@@ -92,18 +93,21 @@ table
 /*分别设置每一行中单元格的宽度*/
 .item1
 {
-	width: 40%;
+	width: 30%;
 }
 
 .item2
 {
-	width: 40%;
+	width: 20%;
 }
 .item3
 {
+	width: 30%;
+}
+.item4
+{
 	width: 20%;
 }
-
 .pagination-page-info {
     padding: .6em;
     padding-left: 0;
@@ -135,14 +139,14 @@ table
 
 }
 
-.search-Songs {
+.search-Albums {
     font-family:'trebuchet MS', 'Lucida sans', Arial;   /*设置字体*/
 	font-size: 14px;
     width: 100%;
     height: 40px;
-    background: #fbf8e9;
-    border: none;
-    color: #6aa6ed;
+    background: #fff;
+    border: 3px solid #fbf8e9;
+    color: #555555;
 }
 
 .form-groups-2 {
@@ -153,7 +157,7 @@ table
     float: left;
 }
 
-.search-Artists {
+.search-Songs {
     font-family:'trebuchet MS', 'Lucida sans', Arial;   /*设置字体*/
 	font-size: 14px;
     width: 100%;
@@ -170,14 +174,14 @@ table
 	width: 25%;                                         /*设置页面宽度占浏览器大小的40%*/
     float: left;
 }
-.search-Albums {
+.search-Artists {
     font-family:'trebuchet MS', 'Lucida sans', Arial;   /*设置字体*/
 	font-size: 14px;
     width: 100%;
     height: 40px;
-    background: #fff;
-    border: 3px solid #fbf8e9;
-    color: #555555;
+    background: #fbf8e9;
+    border: none;
+    color: #6aa6ed;
 }
 
 .form-groups-4 {

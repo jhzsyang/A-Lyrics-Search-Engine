@@ -15,7 +15,7 @@
     <form action="http://127.0.0.1:5000/search" method="post">
         <div class="form-box">
             <label class="search-label">FIND MUSIC</label>
-            <input type="text" class="search-input" name="keyword" id="query" required="required" placeholder={{ search_keyword }}>
+            <input type="text" class="search-input" name="keyword" id="query" required="required" placeholder="{{ search_keyword }}">
             <button class="search-btn" type="submit">Search</button>
         </div>
     </form>
@@ -49,7 +49,7 @@
 </div>
 
         <h2>Result List</h2>
-        <p>{{ data_num }} results in {{ time }} s</p>
+        <p>({{ data_num }} results in {{ time }} s)</p>
 		<table class="Modbus">
 			<thead>
 			<tr>
@@ -70,7 +70,6 @@
               <td><a href={{ item[5] }}>{{ highlight_word(item[1], search_keyword) |safe }} </a></td>
               <td><a href={{ item[6] }}>{{ highlight_word(item[2], search_keyword) |safe }} </a></td>
               <td>{{ highlight_word(item[3], search_keyword) |safe }}</td>
-
             </tr>
             {% endfor %}
 		</table>

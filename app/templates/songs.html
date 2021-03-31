@@ -15,7 +15,7 @@
     <form action="http://127.0.0.1:5000/search" method="post">
         <div class="form-box">
             <label class="search-label">FIND MUSIC</label>
-            <input type="text" class="search-input" name="keyword" id="query"  required="required" placeholder= {{ search_keyword }} >
+            <input type="text" class="search-input" name="keyword" id="query"  required="required" placeholder= "{{ search_keyword }}" >
             <button class="search-btn" type="submit">Search</button>
         </div>
 
@@ -28,19 +28,19 @@
        <button class="search-Songs" type="submit">Songs</button>
 </div>
 <div class="form-groups-2">
-{#    <form action="http://35.222.58.19/artists" method="get">#}
+{#    <form action="http://35.222.58.19:5000/artists" method="get">#}
     <form action="http://127.0.0.1:5000/artists" method="get">
        <button class="search-Artists" type="submit">Artists</button>
     </form>
 </div>
 <div class="form-groups-3">
-{#    <form action="http://35.222.58.19/albums" method="get">#}
+{#    <form action="http://35.222.58.19:5000/albums" method="get">#}
     <form action="http://127.0.0.1:5000/albums" method="get">
        <button class="search-Albums" type="submit">Albums</button>
     </form>
 </div>
 <div class="form-groups-4">
-{#    <form action="http://35.222.58.19/lyrics" method="get">#}
+{#    <form action="http://35.222.58.19:5000/lyrics" method="get">#}
     <form action="http://127.0.0.1:5000/lyrics" method="get">
        <button class="search-Lyrics" type="submit">Lyrics</button>
     </form>
@@ -63,7 +63,6 @@
                mark {background-color:#FFFF00; font-weight:bold; }
             </style>
             <tr>
-
               <td><a href={{ item[4] }}>{{ highlight_word(item[0], search_keyword) |safe }} </a></td>
               <td><a href={{ item[5] }}>{{ highlight_word(item[1], search_keyword) |safe }} </a></td>
               <td><a href={{ item[6] }}>{{ highlight_word(item[2], search_keyword) |safe }} </a></td>

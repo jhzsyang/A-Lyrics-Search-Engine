@@ -10,10 +10,11 @@
 <body>
 
 <div class="header">
+{#    <form action="http://35.222.58.19/songs" method="post">#}
         <form action="http://127.0.0.1:5000/search" method="post">
         <div class="form-box">
             <label class="search-label">FIND MUSIC</label>
-            <input type="text" class="search-input" name="keyword" id="query" required="required" placeholder= {{ search_keyword }}>
+            <input type="text" class="search-input" name="keyword" id="query" required="required" placeholder= "{{ search_keyword }}">
             <button class="search-btn" type="submit">Search</button>
         </div>
 
@@ -48,13 +49,16 @@
 		<table class="Modbus">
 			<thead>
 			<tr>
+                 <th>Songs</th>
 				<th>Artists</th>
 				<th>Albums</th>
-                <th>Songs</th>
 				<th>Date</th>
 			</tr>
 			</thead>
         {% for key,item in data.items() %}
+            <style>
+               mark {background-color:#FFFF00; font-weight:bold; }
+            </style>
             <tr>
                 <td><a href={{ item[4] }}>{{ highlight_word(item[0], search_keyword) |safe }} </a></td>
                 <td><a href={{ item[5] }}>{{ highlight_word(item[1], search_keyword) |safe }} </a></td>
