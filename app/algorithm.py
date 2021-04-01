@@ -250,8 +250,8 @@ def find_keyword(query, lyrics):
     if len(words) == 1:
         words = words[0].split(' ')
     words = [word.lower() for word in words]
-
     s = lyrics.lower()
+
     if s.find(query) != -1:
         pos = s.find(query)
         start = pos
@@ -266,6 +266,49 @@ def find_keyword(query, lyrics):
         for word in words:
             if s.find(word) != -1:
                 pos = s.find(word)
+                start = pos
+                end = pos
+                while s[start: start + 1] != '\n' and start > 0:
+                    start -= 1
+                while s[end: end + 1] != '\n' and end < len(s) - 1:
+                    end += 1
+                locations.add((start, end))
+        for start, end in locations:
+            res += lyrics[start + 1: end + 1] + ' '
+    return res
+
+
+def find_stem_keyword(query, lyrics):
+    res = ""
+    words = evaluate(query)
+    if len(words) == 1:
+        words = words[0].split(' ')
+    words = [word.lower() for word in words]
+    s = lyrics.lower()
+
+    if s.find(stem(query)) != -1:
+        pos = s.find(stem(query))
+        start = pos
+        end = pos
+        while s[start: start + 1] != '\n' and start > 0:
+            start -= 1
+        while s[end: end + 1] != '\n' and end < len(s) - 1:
+            end += 1
+        res = lyrics[start: end + 1]
+    else:
+        locations = set()
+        for word in words:
+            if s.find(word) != -1:
+                pos = s.find(word)
+                start = pos
+                end = pos
+                while s[start: start + 1] != '\n' and start > 0:
+                    start -= 1
+                while s[end: end + 1] != '\n' and end < len(s) - 1:
+                    end += 1
+                locations.add((start, end))
+            elif s.find(stem(word)) != -1:
+                pos = s.find(stem(word))
                 start = pos
                 end = pos
                 while s[start: start + 1] != '\n' and start > 0:
@@ -421,27 +464,54 @@ class Algorithm:
                 tfidf = rank_BM25(query, self.lyrics, self.lyrics_reverse_indexer, self.lyrics_words_count)
                 for (artist, index), _ in tfidf:
                     if (artist, index) in search_result:
-                        line = [find_keyword(query, self.lyrics[artist, index]), self.title[artist, index], artist,
-                                self.date[artist, index],
-                                self.link[artist, index], self.artist_link[artist, index]]
-                        res[i] = line
-                        i += 1
+                        if find_keyword(query, self.lyrics[artist, index]) != '':
+                            line = [find_keyword(query, self.lyrics[artist, index]), self.title[artist, index], artist,
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index]]
+                            res[i] = line
+                            i += 1
                 for (artist, index), _ in tfidf:
                     if (artist, index) not in search_result:
-                        line = [find_keyword(query, self.lyrics[artist, index]), self.title[artist, index], artist,
-                                self.date[artist, index],
-                                self.link[artist, index], self.artist_link[artist, index]]
-                        res[i] = line
-                        i += 1
+                        if find_keyword(query, self.lyrics[artist, index]) != '':
+                            line = [find_keyword(query, self.lyrics[artist, index]), self.title[artist, index], artist,
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index]]
+                            res[i] = line
+                            i += 1
+                for (artist, index), _ in tfidf:
+                    if (artist, index) in search_result:
+                        if find_keyword(query, self.lyrics[artist, index]) == '':
+                            line = [find_stem_keyword(query, self.lyrics[artist, index]), self.title[artist, index], artist,
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index]]
+                            res[i] = line
+                            i += 1
+                for (artist, index), _ in tfidf:
+                    if (artist, index) not in search_result:
+                        if find_keyword(query, self.lyrics[artist, index]) == '':
+                            line = [find_stem_keyword(query, self.lyrics[artist, index]), self.title[artist, index], artist,
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index]]
+                            res[i] = line
+                            i += 1
             else:
                 q = query
                 query = evaluate(query)
                 search_result = boolean_search(self.lyrics_reverse_indexer, query)
                 for (artist, index) in search_result:
-                    line = [find_keyword(q, self.lyrics[artist, index]), self.title[artist, index], artist, self.date[artist, index],
-                            self.link[artist, index], self.artist_link[artist, index]]
-                    res[i] = line
-                    i += 1
+                    if find_keyword(query, self.lyrics[artist, index]) != '':
+                        line = [find_keyword(q, self.lyrics[artist, index]), self.title[artist, index], artist,
+                                self.date[artist, index],
+                                self.link[artist, index], self.artist_link[artist, index]]
+                        res[i] = line
+                        i += 1
+                for (artist, index) in search_result:
+                    if find_keyword(query, self.lyrics[artist, index]) == '':
+                        line = [find_stem_keyword(query, self.lyrics[artist, index]), self.title[artist, index], artist,
+                                self.date[artist, index],
+                                self.link[artist, index], self.artist_link[artist, index]]
+                        res[i] = line
+                        i += 1
         else:
             if len(p) == 1:
                 search_result = phrase_search(self.reverse_indexer, query)

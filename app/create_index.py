@@ -14,6 +14,31 @@ def preprocessing(text):
     return words
 
 
+def clean_data(error, artist_url, title_name, album_name, album_url, lyrics_content, url, release_date):
+    error_songs = []
+    for i in reversed(error):
+        error_songs.append([i, artist_url[i], title_name[i], album_name[i], album_url[i], lyrics_content[i], url[i],
+                            release_date[i]])
+        del artist_url[i]
+        del title_name[i]
+        del album_name[i]
+        del album_url[i]
+        del lyrics_content[i]
+        del url[i]
+        del release_date[i]
+    for k in range(len(error_songs) - 1, -1, -1):
+        index, temp_artist_url, temp_title_name, temp_album_name, temp_album_url, temp_lyrics_content, temp_url, temp_release_date = \
+            error_songs[k]
+        artist_url.append(temp_artist_url)
+        title_name.append(temp_title_name)
+        album_name.append(temp_album_name)
+        album_url.append(temp_album_url)
+        lyrics_content.append(temp_lyrics_content)
+        url.append(temp_url)
+        release_date.append(temp_release_date)
+    return artist_url, title_name, album_name, album_url, lyrics_content, url, release_date
+
+
 class Indexer:
 
     def __init__(self):
@@ -32,9 +57,72 @@ class Indexer:
                 with open(file_path) as f:
                     songs = json.load(f)
                 name = songs['name']
+                artist_url = [songs['url'] for _ in songs['songs']]
+                title_name = [song['title'] for song in songs['songs']]
+                album_name = []
+                album_url = []
+                for song in songs['songs']:
+                    if song['album'] is not None:
+                        album_name.append(song['album']['name'])
+                        album_url.append(song['album']['url'])
+                    else:
+                        album_name.append('')
+                        album_url.append('about:blank')
+                lyrics_content = [song['lyrics'] for song in songs['songs']]
+                url = [song['url'] for song in songs['songs']]
+                release_date = [song['release_date'] for song in songs['songs']]
+
+                # clean data
+                error, error1, error2, error3 = [], [], [], []
+                for i in range(len(url)):
+                    if url[i][-6:] != 'lyrics':
+                        error.append(i)
+                for i in reversed(error):
+                    del artist_url[i]
+                    del title_name[i]
+                    del album_name[i]
+                    del album_url[i]
+                    del lyrics_content[i]
+                    del url[i]
+                    del release_date[i]
+                error1 = []
+                for i in range(len(album_name)):
+                    if album_name[i] == 'Unreleased Songs':
+                        error1.append(i)
+                error2 = []
+                for i in range(len(album_name)):
+                    if album_name[i] == '':
+                        error2.append(i)
+                error3 = []
+                for i in range(len(release_date)):
+                    if release_date[i] is None:
+                        error3.append(i)
+                artist_url, title_name, album_name, album_url, lyrics_content, url, release_date = clean_data(error1,
+                                                                                                              artist_url,
+                                                                                                              title_name,
+                                                                                                              album_name,
+                                                                                                              album_url,
+                                                                                                              lyrics_content,
+                                                                                                              url,
+                                                                                                              release_date)
+                artist_url, title_name, album_name, album_url, lyrics_content, url, release_date = clean_data(error2,
+                                                                                                              artist_url,
+                                                                                                              title_name,
+                                                                                                              album_name,
+                                                                                                              album_url,
+                                                                                                              lyrics_content,
+                                                                                                              url,
+                                                                                                              release_date)
+                artist_url, title_name, album_name, album_url, lyrics_content, url, release_date = clean_data(error3,
+                                                                                                              artist_url,
+                                                                                                              title_name,
+                                                                                                              album_name,
+                                                                                                              album_url,
+                                                                                                              lyrics_content,
+                                                                                                              url,
+                                                                                                              release_date)
 
                 # process artist
-                artist_url = [songs['url'] for _ in songs['songs']]
                 for index in range(len(artist_url)):
                     artist[name, index] = name
                     texts[name, index] = name
@@ -76,7 +164,6 @@ class Indexer:
                             words_count[name, index] = {word: 1}
 
                 # process title
-                title_name = [song['title'] for song in songs['songs']]
                 for index, text in enumerate(title_name):
                     title[name, index] = str(text)
                     texts[name, index] += title[name, index]
@@ -117,15 +204,6 @@ class Indexer:
                             words_count[name, index] = {word: 1}
 
                 # process album
-                album_name = []
-                album_url = []
-                for song in songs['songs']:
-                    if song['album'] is not None:
-                        album_name.append(song['album']['name'])
-                        album_url.append(song['album']['url'])
-                    else:
-                        album_name.append('')
-                        album_url.append('about:blank')
                 for index, text in enumerate(album_name):
                     album[name, index] = str(text)
                     texts[name, index] += album[name, index]
@@ -167,8 +245,6 @@ class Indexer:
                             words_count[name, index] = {word: 1}
 
                 # process lyrics
-                lyrics_content = [song['lyrics'] for song in songs['songs']]
-                url = [song['url'] for song in songs['songs']]
                 for index, text in enumerate(lyrics_content):
                     temp = re.sub("\[.*\]", '', str(lyrics_content[index]))
                     lyrics[name, index] = temp.replace(name, '')
@@ -211,7 +287,6 @@ class Indexer:
                             words_count[name, index] = {word: 1}
 
                 # process release dates
-                release_date = [song['release_date'] for song in songs['songs']]
                 for index, text in enumerate(release_date):
                     date[name, index] = str(text)
                     if date[name, index] == 'None':
