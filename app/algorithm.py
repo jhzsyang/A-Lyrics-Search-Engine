@@ -381,81 +381,254 @@ class Algorithm:
             if len(p) == 1:
                 search_result = phrase_search(self.title_reverse_indexer, query)
                 tfidf = rank_BM25(query, self.title, self.title_reverse_indexer, self.title_words_count)
+                backup, backup_1, backup_2, backup_3, backup_4 = [], [], [], [], []
                 for (artist, index), _ in tfidf:
                     if (artist, index) in search_result:
-                        line = [self.title[artist, index], artist, self.album[artist, index], self.date[artist, index],
-                                self.link[artist, index], self.artist_link[artist, index],
-                                self.album_link[artist, index]]
-                        res[i] = line
-                        i += 1
-                for (artist, index), _ in tfidf:
-                    if (artist, index) not in search_result:
-                        line = [self.title[artist, index], artist, self.album[artist, index], self.date[artist, index],
-                                self.link[artist, index], self.artist_link[artist, index],
-                                self.album_link[artist, index]]
-                        res[i] = line
-                        i += 1
+                        if self.album[artist, index] != 'Unreleased Songs' and self.album[artist, index] != '' and \
+                                self.date[artist, index] != '':
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            res[i] = line
+                            i += 1
+                        elif self.album[artist, index] != 'Unreleased Songs':
+                            if self.album[artist, index] == '' or self.date[artist, index] == '':
+                                line = [self.title[artist, index], artist, self.album[artist, index],
+                                        self.date[artist, index],
+                                        self.link[artist, index], self.artist_link[artist, index],
+                                        self.album_link[artist, index]]
+                                backup_1.append(line)
+                        else:
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            backup_2.append(line)
+                    else:
+                        if self.album[artist, index] != 'Unreleased Songs' and self.album[artist, index] != '' and \
+                                self.date[artist, index] != '':
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            backup_1.append(line)
+                        elif self.album[artist, index] != 'Unreleased Songs':
+                            if self.album[artist, index] == '' or self.date[artist, index] == '':
+                                line = [self.title[artist, index], artist, self.album[artist, index],
+                                        self.date[artist, index],
+                                        self.link[artist, index], self.artist_link[artist, index],
+                                        self.album_link[artist, index]]
+                                backup_3.append(line)
+                        else:
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            backup_4.append(line)
+                add_list = backup + backup_1 + backup_3 + backup_2 + backup_4
+                for k in range(len(add_list)):
+                    res[i] = add_list[k]
+                    i += 1
+
             else:
                 query = evaluate(query)
                 search_result = boolean_search(self.title_reverse_indexer, query)
+                backup_1, backup_2 = [], []
                 for (artist, index) in search_result:
-                    line = [self.title[artist, index], artist, self.album[artist, index], self.date[artist, index],
-                            self.link[artist, index], self.artist_link[artist, index], self.album_link[artist, index]]
-                    res[i] = line
+                    if self.album[artist, index] != 'Unreleased Songs' and self.album[artist, index] != '' and \
+                            self.date[artist, index] != '':
+                        line = [self.title[artist, index], artist, self.album[artist, index],
+                                self.date[artist, index],
+                                self.link[artist, index], self.artist_link[artist, index],
+                                self.album_link[artist, index]]
+                        res[i] = line
+                        i += 1
+                    elif self.album[artist, index] != 'Unreleased Songs':
+                        if self.album[artist, index] == '' or self.date[artist, index] == '':
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            backup_1.append(line)
+                    else:
+                        line = [self.title[artist, index], artist, self.album[artist, index],
+                                self.date[artist, index],
+                                self.link[artist, index], self.artist_link[artist, index],
+                                self.album_link[artist, index]]
+                        backup_2.append(line)
+                add_list = backup_1 + backup_2
+                for k in range(len(add_list)):
+                    res[i] = add_list[k]
                     i += 1
 
         elif choice == 'artist':
             if len(p) == 1:
                 search_result = phrase_search(self.artist_reverse_indexer, query)
                 tfidf = rank_BM25(query, self.artist, self.artist_reverse_indexer, self.artist_words_count)
+                backup, backup_1, backup_2, backup_3, backup_4 = [], [], [], [], []
                 for (artist, index), _ in tfidf:
                     if (artist, index) in search_result:
-                        line = [self.title[artist, index], artist, self.album[artist, index], self.date[artist, index],
-                                self.link[artist, index], self.artist_link[artist, index],
-                                self.album_link[artist, index]]
-                        res[i] = line
-                        i += 1
-                for (artist, index), _ in tfidf:
-                    if (artist, index) not in search_result:
-                        line = [self.title[artist, index], artist, self.album[artist, index], self.date[artist, index],
-                                self.link[artist, index], self.artist_link[artist, index],
-                                self.album_link[artist, index]]
-                        res[i] = line
-                        i += 1
+                        if self.album[artist, index] != 'Unreleased Songs' and self.album[artist, index] != '' and \
+                                self.date[artist, index] != '':
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            res[i] = line
+                            i += 1
+                        elif self.album[artist, index] != 'Unreleased Songs':
+                            if self.album[artist, index] == '' or self.date[artist, index] == '':
+                                line = [self.title[artist, index], artist, self.album[artist, index],
+                                        self.date[artist, index],
+                                        self.link[artist, index], self.artist_link[artist, index],
+                                        self.album_link[artist, index]]
+                                backup_1.append(line)
+                        else:
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            backup_2.append(line)
+                    else:
+                        if self.album[artist, index] != 'Unreleased Songs' and self.album[artist, index] != '' and \
+                                self.date[artist, index] != '':
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            backup.append(line)
+                        elif self.album[artist, index] != 'Unreleased Songs':
+                            if self.album[artist, index] == '' or self.date[artist, index] == '':
+                                line = [self.title[artist, index], artist, self.album[artist, index],
+                                        self.date[artist, index],
+                                        self.link[artist, index], self.artist_link[artist, index],
+                                        self.album_link[artist, index]]
+                                backup_3.append(line)
+                        else:
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            backup_4.append(line)
+                add_list = backup + backup_1 + backup_3 + backup_2 + backup_4
+                for k in range(len(add_list)):
+                    res[i] = add_list[k]
+                    i += 1
             else:
                 query = evaluate(query)
                 search_result = boolean_search(self.artist_reverse_indexer, query)
+                backup_1, backup_2 = [], []
                 for (artist, index) in search_result:
-                    line = [self.title[artist, index], artist, self.album[artist, index], self.date[artist, index],
-                            self.link[artist, index], self.artist_link[artist, index], self.album_link[artist, index]]
-                    res[i] = line
+                    if self.album[artist, index] != 'Unreleased Songs' and self.album[artist, index] != '' and \
+                            self.date[artist, index] != '':
+                        line = [self.title[artist, index], artist, self.album[artist, index],
+                                self.date[artist, index],
+                                self.link[artist, index], self.artist_link[artist, index],
+                                self.album_link[artist, index]]
+                        res[i] = line
+                        i += 1
+                    elif self.album[artist, index] != 'Unreleased Songs':
+                        if self.album[artist, index] == '' or self.date[artist, index] == '':
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            backup_1.append(line)
+                    else:
+                        line = [self.title[artist, index], artist, self.album[artist, index],
+                                self.date[artist, index],
+                                self.link[artist, index], self.artist_link[artist, index],
+                                self.album_link[artist, index]]
+                        backup_2.append(line)
+                add_list = backup_1 + backup_2
+                for k in range(len(add_list)):
+                    res[i] = add_list[k]
                     i += 1
 
         elif choice == 'album':
             if len(p) == 1:
                 search_result = phrase_search(self.album_reverse_indexer, query)
                 tfidf = rank_BM25(query, self.album, self.album_reverse_indexer, self.album_words_count)
+                backup, backup_1, backup_2, backup_3, backup_4 = [], [], [], [], []
                 for (artist, index), _ in tfidf:
                     if (artist, index) in search_result:
-                        line = [self.title[artist, index], artist, self.album[artist, index], self.date[artist, index],
-                                self.link[artist, index], self.artist_link[artist, index],
-                                self.album_link[artist, index]]
-                        res[i] = line
-                        i += 1
-                for (artist, index), _ in tfidf:
-                    if (artist, index) not in search_result:
-                        line = [self.title[artist, index], artist, self.album[artist, index], self.date[artist, index],
-                                self.link[artist, index], self.artist_link[artist, index],
-                                self.album_link[artist, index]]
-                        res[i] = line
-                        i += 1
+                        if self.album[artist, index] != 'Unreleased Songs' and self.album[artist, index] != '' and \
+                                self.date[artist, index] != '':
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            res[i] = line
+                            i += 1
+                        elif self.album[artist, index] != 'Unreleased Songs':
+                            if self.album[artist, index] == '' or self.date[artist, index] == '':
+                                line = [self.title[artist, index], artist, self.album[artist, index],
+                                        self.date[artist, index],
+                                        self.link[artist, index], self.artist_link[artist, index],
+                                        self.album_link[artist, index]]
+                                backup_1.append(line)
+                        else:
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            backup_2.append(line)
+                    else:
+                        if self.album[artist, index] != 'Unreleased Songs' and self.album[artist, index] != '' and \
+                                self.date[artist, index] != '':
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            backup.append(line)
+                        elif self.album[artist, index] != 'Unreleased Songs':
+                            if self.album[artist, index] == '' or self.date[artist, index] == '':
+                                line = [self.title[artist, index], artist, self.album[artist, index],
+                                        self.date[artist, index],
+                                        self.link[artist, index], self.artist_link[artist, index],
+                                        self.album_link[artist, index]]
+                                backup_3.append(line)
+                        else:
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            backup_4.append(line)
+
+                add_list = backup + backup_1 + backup_3 + backup_2 + backup_4
+                for k in range(len(add_list)):
+                    res[i] = add_list[k]
+                    i += 1
             else:
                 query = evaluate(query)
                 search_result = boolean_search(self.album_reverse_indexer, query)
+                backup_1, backup_2 = [], []
                 for (artist, index) in search_result:
-                    line = [self.title[artist, index], artist, self.album[artist, index], self.date[artist, index],
-                            self.link[artist, index], self.artist_link[artist, index], self.album_link[artist, index]]
-                    res[i] = line
+                    if self.album[artist, index] != 'Unreleased Songs' and self.album[artist, index] != '' and \
+                            self.date[artist, index] != '':
+                        line = [self.title[artist, index], artist, self.album[artist, index],
+                                self.date[artist, index],
+                                self.link[artist, index], self.artist_link[artist, index],
+                                self.album_link[artist, index]]
+                        res[i] = line
+                        i += 1
+                    elif self.album[artist, index] != 'Unreleased Songs':
+                        if self.album[artist, index] == '' or self.date[artist, index] == '':
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            backup_1.append(line)
+                    else:
+                        line = [self.title[artist, index], artist, self.album[artist, index],
+                                self.date[artist, index],
+                                self.link[artist, index], self.artist_link[artist, index],
+                                self.album_link[artist, index]]
+                        backup_2.append(line)
+                add_list = backup_1 + backup_2
+                for k in range(len(add_list)):
+                    res[i] = add_list[k]
                     i += 1
 
         elif choice == 'lyrics':
@@ -481,7 +654,8 @@ class Algorithm:
                 for (artist, index), _ in tfidf:
                     if (artist, index) in search_result:
                         if find_keyword(query, self.lyrics[artist, index]) == '':
-                            line = [find_stem_keyword(query, self.lyrics[artist, index]), self.title[artist, index], artist,
+                            line = [find_stem_keyword(query, self.lyrics[artist, index]), self.title[artist, index],
+                                    artist,
                                     self.date[artist, index],
                                     self.link[artist, index], self.artist_link[artist, index]]
                             res[i] = line
@@ -489,7 +663,8 @@ class Algorithm:
                 for (artist, index), _ in tfidf:
                     if (artist, index) not in search_result:
                         if find_keyword(query, self.lyrics[artist, index]) == '':
-                            line = [find_stem_keyword(query, self.lyrics[artist, index]), self.title[artist, index], artist,
+                            line = [find_stem_keyword(query, self.lyrics[artist, index]), self.title[artist, index],
+                                    artist,
                                     self.date[artist, index],
                                     self.link[artist, index], self.artist_link[artist, index]]
                             res[i] = line
@@ -514,31 +689,88 @@ class Algorithm:
                         i += 1
         else:
             if len(p) == 1:
-                search_result = phrase_search(self.reverse_indexer, query)
+                search_result = phrase_search(self.title_reverse_indexer, query)
                 tfidf = rank_BM25(query, self.texts, self.reverse_indexer, self.words_count)
+                backup, backup_1, backup_2, backup_3, backup_4 = [], [], [], [], []
                 for (artist, index), _ in tfidf:
                     if (artist, index) in search_result:
-                        line = [self.title[artist, index], artist, self.album[artist, index], self.date[artist, index],
-                                self.link[artist, index], self.artist_link[artist, index],
-                                self.album_link[artist, index]]
-                        res[i] = line
-                        i += 1
-                for (artist, index), _ in tfidf:
-                    if (artist, index) not in search_result:
-                        line = [self.title[artist, index], artist, self.album[artist, index], self.date[artist, index],
-                                self.link[artist, index], self.artist_link[artist, index],
-                                self.album_link[artist, index]]
-                        res[i] = line
-                        i += 1
+                        if self.album[artist, index] != 'Unreleased Songs' and self.album[artist, index] != '' and \
+                                self.date[artist, index] != '':
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            res[i] = line
+                            i += 1
+                        elif self.album[artist, index] != 'Unreleased Songs':
+                            if self.album[artist, index] == '' or self.date[artist, index] == '':
+                                line = [self.title[artist, index], artist, self.album[artist, index],
+                                        self.date[artist, index],
+                                        self.link[artist, index], self.artist_link[artist, index],
+                                        self.album_link[artist, index]]
+                                backup_1.append(line)
+                        else:
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            backup_2.append(line)
+                    else:
+                        if self.album[artist, index] != 'Unreleased Songs' and self.album[artist, index] != '' and \
+                                self.date[artist, index] != '':
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            backup.append(line)
+                        elif self.album[artist, index] != 'Unreleased Songs':
+                            if self.album[artist, index] == '' or self.date[artist, index] == '':
+                                line = [self.title[artist, index], artist, self.album[artist, index],
+                                        self.date[artist, index],
+                                        self.link[artist, index], self.artist_link[artist, index],
+                                        self.album_link[artist, index]]
+                                backup_3.append(line)
+                        else:
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            backup_4.append(line)
+
+                add_list = backup + backup_1 + backup_3 + backup_2 + backup_4
+                for k in range(len(add_list)):
+                    res[i] = add_list[k]
+                    i += 1
             else:
                 q = query
                 query = evaluate(query)
-                search_result = boolean_search(self.lyrics_reverse_indexer, query)
+                search_result = boolean_search(self.reverse_indexer, query)
+                backup_1, backup_2 = [], []
                 for (artist, index) in search_result:
-                    line = [self.title[artist, index], artist, self.album[artist, index], self.date[artist, index],
-                            self.link[artist, index], self.artist_link[artist, index],
-                            self.album_link[artist, index]]
-                    res[i] = line
+                    if self.album[artist, index] != 'Unreleased Songs' and self.album[artist, index] != '' and \
+                            self.date[artist, index] != '':
+                        line = [self.title[artist, index], artist, self.album[artist, index],
+                                self.date[artist, index],
+                                self.link[artist, index], self.artist_link[artist, index],
+                                self.album_link[artist, index]]
+                        res[i] = line
+                        i += 1
+                    elif self.album[artist, index] != 'Unreleased Songs':
+                        if self.album[artist, index] == '' or self.date[artist, index] == '':
+                            line = [self.title[artist, index], artist, self.album[artist, index],
+                                    self.date[artist, index],
+                                    self.link[artist, index], self.artist_link[artist, index],
+                                    self.album_link[artist, index]]
+                            backup_1.append(line)
+                    else:
+                        line = [self.title[artist, index], artist, self.album[artist, index],
+                                self.date[artist, index],
+                                self.link[artist, index], self.artist_link[artist, index],
+                                self.album_link[artist, index]]
+                        backup_2.append(line)
+                add_list = backup_1 + backup_2
+                for k in range(len(add_list)):
+                    res[i] = add_list[k]
                     i += 1
 
         return res
