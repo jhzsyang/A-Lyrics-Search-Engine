@@ -377,6 +377,7 @@ class Algorithm:
         i = 1
         p = re.split(r' (AND|OR) ', query)
 
+        # song
         if choice == 'song':
             if len(p) == 1:
                 search_result = phrase_search(self.title_reverse_indexer, query)
@@ -462,6 +463,7 @@ class Algorithm:
                     res[i] = add_list[k]
                     i += 1
 
+        # artist
         elif choice == 'artist':
             if len(p) == 1:
                 search_result = phrase_search(self.artist_reverse_indexer, query)
@@ -546,6 +548,7 @@ class Algorithm:
                     res[i] = add_list[k]
                     i += 1
 
+        # album
         elif choice == 'album':
             if len(p) == 1:
                 search_result = phrase_search(self.album_reverse_indexer, query)
@@ -631,6 +634,7 @@ class Algorithm:
                     res[i] = add_list[k]
                     i += 1
 
+        # lyrics
         elif choice == 'lyrics':
             if len(p) == 1:
                 search_result = phrase_search(self.lyrics_reverse_indexer, query)
