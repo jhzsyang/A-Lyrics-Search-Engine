@@ -14,7 +14,7 @@ Group Project for Text Technologies for Data Science
 * Run ``python.exe -m flask run``.
 * Click http://127.0.0.1:5000/ to see the search engine. 
 # Unfinished
-* Extract topic words based on (Lasso) LDA Topic models.
+* Extract topic words based on (Lasso) LDA topic models.
 * Use (N-gram) Language model to analyze the relations of lyrics.
 * Provide more search options and optimize the search interface.
 
